@@ -1,46 +1,61 @@
 import { Flex } from '@chakra-ui/react';
-import React, { useState } from 'react';
-import { Chart as ChartJS, registerables } from 'chart.js';
+import React, { useEffect, useState } from 'react';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js'
 import { Line } from 'react-chartjs-2';
 import faker from 'faker';
 
-ChartJS.register(...registerables);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+)
 
-const Chart: React.FC = () => {
+type Data = {
+  date: string,
+  confirmed: number
+  deaths: number,
+  recovered: number
+}
+
+const Chart: React.FC<any> = ({ dailyData }) => {
 
   const [trainingData, setTrainingData] = useState([])
+  console.log(dailyData);
 
-  const [chartData, setChartData] = useState({
-    labels: ['January', 'February', 'March',
-           'April', 'May'],
-    datasets: [
-      {
-        label: 'Rainfall',
-        fill: false,
-        lineTension: 0.5,
-        backgroundColor: 'rgba(255, 99, 132, 0.5)',
-        borderColor: 'rgb(255, 99, 132)',
-        borderWidth: 2,
-        data: [65, 59, 80, 81, 56]
-      }
-    ]
-  })
+  useEffect(() => {
+    dailyData.reverse();
+    setTrainingData(dailyData);
+  }, [dailyData])
 
   const trainingChart = (
     trainingData[0] && (
       <Line
         data={{
-          labels: trainingData.map(({ date }) => new Date(date).toLocaleDateString()),
+          labels: trainingData.reverse().map(({ date }) => new Date(date).toLocaleDateString()),
           datasets: [{
             data: trainingData.map((data) => data.confirmed),
             label: 'Infected',
-            borderColor: '#3333ff',
+            borderColor: 'rgb(53, 162, 235)',
+            backgroundColor: 'rgba(53, 162, 235, 0.5)',
             fill: true,
           }, {
             data: trainingData.map((data) => data.deaths),
             label: 'Deaths',
-            borderColor: 'red',
-            backgroundColor: 'rgba(255, 0, 0, 0.5)',
+            borderColor: 'rgb(255, 99, 132)',
+            backgroundColor: 'rgba(255, 99, 132, 0.5)',
             fill: true,
           },  {
             data: trainingData.map((data) => data.recovered),
@@ -88,9 +103,15 @@ const Chart: React.FC = () => {
   };
 
   return (
-    <Flex w='50%'>
-      <Line options={testingOptions} data={testingData} />
+    <Flex w='100%'>
+      <Flex w='40%'>
+        <Line options={testingOptions} data={testingData} />
+      </Flex>
+      <Flex w='40%'>
+        {trainingChart}
+      </Flex>
     </Flex>
+
   );
 }
 
