@@ -1,7 +1,7 @@
 import axios from 'axios'
 
-const api = axios.create({
-  baseURL: 'https://covid-19-statistics.p.rapidapi.com/reports/total'
+export const api = axios.create({
+  baseURL: 'https://covid-19-statistics.p.rapidapi.com/reports'
 })
 
 api.defaults.headers['x-rapidapi-host'] = 'covid-19-statistics.p.rapidapi.com';
