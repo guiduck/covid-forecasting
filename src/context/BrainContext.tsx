@@ -49,12 +49,37 @@ type TrainingChart = {
   };
 }
 
+type PredictedChart = {
+  data: {
+    labels: number[];
+    datasets: {
+        data: number[];
+        label: string;
+        borderColor: string;
+        backgroundColor: string;
+    }[];
+  };
+  options: {
+      responsive: boolean;
+      plugins: {
+          legend: {
+              position: any;
+          };
+          title: {
+              display: boolean;
+              text: string;
+          };
+      };
+  };
+}
+
 type BrainContextType = {
   trainingData: TrainingData[],
   setTrainingData: Dispatch<SetStateAction<TrainingData[]>>,
   setDailyData: Dispatch<SetStateAction<DailyData[]>>,
   dailyData: DailyData[],
   trainingChartData: TrainingChart,
+  predictedChartData: PredictedChart,
   forecast: (data: TrainingData[], days: number) => void,
   daysInput: string,
   setDaysInput: Dispatch<SetStateAction<string>>,
@@ -72,6 +97,30 @@ export const BrainProvider = ({ children }) => {
 
   const [daysInput, setDaysInput] = useState('')
   const [prediction, setPrediction] = useState([]);
+
+  const predictedChartData = {
+    data: {
+      labels: prediction.map(( n, index ) => index),
+      datasets: [{
+        data: prediction.map((data) => data),
+        label: 'Infected',
+        borderColor: 'rgb(53, 162, 235)',
+        backgroundColor: 'rgba(53, 162, 235, 0.5)',
+      }],
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'top' as const,
+        },
+        title: {
+          display: true,
+          text: 'Your Covid-19 infection forecasting',
+        },
+      }
+    }
+  }
 
   const trainingChartData = {
     data: {
@@ -148,10 +197,10 @@ export const BrainProvider = ({ children }) => {
     console.log(scaledData, 'scaledData')
     console.log('formated scaled/fitttrans data', readyforTrainingData)
 
-    console.log(network.run([2, 3, 4]))
-    const result = network.forecast([3], daysInput)
-    setPrediction(result)
+    const result = network.forecast([1], daysInput)
+    setPrediction(scaler.inverse_transform(result))
     console.log(result)
+    console.log(scaler.inverse_transform(result))
 
     // reverse scailing and json.stringify result
     // console.log(JSON.stringify(scaler.inverse_transform(network.forecast(scaledData, 3))));
@@ -177,6 +226,7 @@ export const BrainProvider = ({ children }) => {
     }
 
     loadDailyData()
+    loadGlobalData()
   }, [])
 
   return (
@@ -190,7 +240,8 @@ export const BrainProvider = ({ children }) => {
         forecast,
         daysInput,
         setDaysInput,
-        prediction
+        prediction,
+        predictedChartData
       }}
     >
       {children}

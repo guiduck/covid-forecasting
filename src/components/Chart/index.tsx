@@ -11,7 +11,6 @@ import {
   Legend,
 } from 'chart.js'
 import { Line } from 'react-chartjs-2';
-import faker from 'faker';
 import { useBrainContext } from '../../context/BrainContext';
 
 ChartJS.register(
@@ -26,7 +25,7 @@ ChartJS.register(
 
 const Chart: React.FC<any> = ({ dailyData }) => {
 
-  const { setTrainingData, trainingChartData } = useBrainContext();
+  const { setTrainingData, trainingChartData, predictedChartData } = useBrainContext();
 
   useEffect(() => {
     if (dailyData) {
@@ -36,45 +35,13 @@ const Chart: React.FC<any> = ({ dailyData }) => {
   }, [dailyData])
 
 
-  const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
-
-  const testingData = {
-    labels,
-    datasets: [
-      {
-        label: 'Dataset 1',
-        data: labels.map(() => faker.datatype.number({ min: -1000, max: 1000 })),
-        borderColor: 'rgb(255, 99, 132)',
-        backgroundColor: 'rgba(255, 99, 132, 0.5)',
-      },
-      {
-        label: 'Dataset 2',
-        data: labels.map(() => faker.datatype.number({ min: -1000, max: 1000 })),
-        borderColor: 'rgb(53, 162, 235)',
-        backgroundColor: 'rgba(53, 162, 235, 0.5)',
-      },
-    ],
-  };
-  const testingOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'top' as const,
-      },
-      title: {
-        display: true,
-        text: 'Chart.js Line Chart',
-      },
-    },
-  };
-
   return (
     <Flex direction='column' w='100%'>
       <Flex w='70%' p={50}>
-        <Line options={testingOptions} data={testingData} />
+        <Line options={trainingChartData.options} data={trainingChartData.data} />
       </Flex>
       <Flex w='70%' p={50}>
-        <Line options={trainingChartData.options} data={trainingChartData.data} />
+        <Line options={predictedChartData.options} data={predictedChartData.data} />
       </Flex>
     </Flex>
   );

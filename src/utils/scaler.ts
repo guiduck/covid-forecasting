@@ -13,6 +13,8 @@ function fit(X, min = 0, max = 1) {
   min_ = min;
   max_ = max;
 
+  data = { X_max: X_max, X_min: X_min, max_: max_, min_: min_ };
+
   var X_minArr = X.map(function (values) {
     return values - X_min;
   });
@@ -37,6 +39,7 @@ function fit_transform(data, min = 0, max = 1) {
 
 function inverse_transform(input, min = 0, max = 1) {
   var fit = data;
+  console.log(fit)
 
   var X = input.map(function (values) {
     return (values - min) / (max - min);
