@@ -1,7 +1,7 @@
 import { Flex } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Chart from '../Chart';
-import { fetchDailyData, fetchGlobalData } from '../../services/api';
+import { useBrainContext } from '../../context/BrainContext';
 
 type DailyData = {
   positive: number,
@@ -12,25 +12,7 @@ type DailyData = {
 
 const Dashboard: React.FC = () => {
 
-  const [dailyData, setDailyData] = useState<DailyData[]>();
-
-  useEffect(() => {
-    const loadDailyData = async () => {
-      const initialDailyData = await fetchDailyData();
-
-      if (initialDailyData) {
-        setDailyData(initialDailyData);
-        console.log(initialDailyData);
-      }
-
-      const globalData = await fetchGlobalData();
-      if (globalData) {
-        console.log(globalData)
-      }
-    }
-
-    loadDailyData();
-  }, [])
+  const { dailyData } = useBrainContext();
 
   return (
     <Flex>

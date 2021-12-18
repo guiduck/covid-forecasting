@@ -1,5 +1,5 @@
 import { Flex, Spinner } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -12,6 +12,7 @@ import {
 } from 'chart.js'
 import { Line } from 'react-chartjs-2';
 import faker from 'faker';
+import { useBrainContext } from '../../context/BrainContext';
 var brain = require('brain.js');
 
 ChartJS.register(
@@ -24,24 +25,14 @@ ChartJS.register(
   Legend
 )
 
-type Data = {
-  date: string,
-  confirmed: number
-  deaths: number,
-  recovered: number
-}
-
 const Chart: React.FC<any> = ({ dailyData }) => {
 
-
-  const [trainingData, setTrainingData] = useState([])
-  console.log(dailyData);
+  const { trainingData, setTrainingData } = useBrainContext();
 
   useEffect(() => {
 
-
-      console.log('has brain')
-      const network = new brain.NeuralNetwork({
+    console.log('has brain')
+    const network = new brain.NeuralNetwork({
       hiddenLayers: [3, 6]
     })
 
@@ -147,7 +138,6 @@ const Chart: React.FC<any> = ({ dailyData }) => {
         {trainingChart}
       </Flex>
     </Flex>
-
   );
 }
 
