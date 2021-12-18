@@ -1,6 +1,8 @@
 import { createContext, Dispatch, SetStateAction, useContext, useEffect, useState } from "react";
 import { fetchDailyData, fetchGlobalData } from "../services/api";
-import * as brain from 'brain.js'
+import * as brain from 'brain.js';
+// import scaler from 'minmaxscaler'
+import scaler from '../utils/scaler'
 
 type DailyData = {
   positive: number,
@@ -104,13 +106,30 @@ export const BrainProvider = ({ children }) => {
     console.log(trainingData)
     setTraining(true)
 
-    const infected = new Array(50).fill(0)
+    function format(arr) {
+      const toReturn = []
+      for(let i= 0; i<arr.length; i+=5) {
+          toReturn.push(arr.slice(i, i+5))
+      }
+      if(toReturn[toReturn.length-1].length == 1) {
+        const last = toReturn.pop()
+        toReturn[toReturn.length-1].concat(last)
+      }
+      return toReturn
+    }
+
+    const newTrainingData = new Array(50).fill(0)
 
     if (trainingData) {
       for(let i = 0; i <= 50; i ++) {
-        infected[i] = trainingData[trainingData.length - 51 + i]?.confirmed
+        newTrainingData[i] = trainingData[trainingData.length - 51 + i]?.confirmed
       }
     }
+
+    const scaledData = scaler.fit_transform(newTrainingData);
+    const readyforTrainingData = format(scaledData);
+
+    //use readyForTrainingData to train networkw
 
     const network = new brain.recurrent.LSTMTimeStep({
       inputSize: 1,
@@ -118,19 +137,24 @@ export const BrainProvider = ({ children }) => {
       outputSize: 1
     })
 
-    network.train([[1,2,3,4,5,6,7,8,9]], {
+    network.train([scaledData], {
       learningRate: 0.005,
       errorThresh: 0.01,
       log: stats => {
         console.log(stats);
       }
     })
-    console.log(infected)
+    console.log('unscaled learning data', newTrainingData)
+    console.log(scaledData, 'scaledData')
+    console.log('formated scaled/fitttrans data', readyforTrainingData)
 
     console.log(network.run([2, 3, 4]))
     const result = network.forecast([3], daysInput)
     setPrediction(result)
     console.log(result)
+
+    // reverse scailing and json.stringify result
+    // console.log(JSON.stringify(scaler.inverse_transform(network.forecast(scaledData, 3))));
 
     setTraining(false)
   }

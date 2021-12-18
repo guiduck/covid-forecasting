@@ -20,6 +20,7 @@
     "chart.js": "^3.6.2",
     "faker": "^5.5.3",
     "framer-motion": "^4",
+    "minmaxscaler": "^1.0.1",
     "next": "11.1.2",
     "react": "17.0.2",
     "react-chartjs-2": "^4.0.0",
