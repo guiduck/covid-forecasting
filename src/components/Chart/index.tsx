@@ -13,7 +13,6 @@ import {
 import { Line } from 'react-chartjs-2';
 import faker from 'faker';
 import { useBrainContext } from '../../context/BrainContext';
-var brain = require('brain.js');
 
 ChartJS.register(
   CategoryScale,
@@ -27,75 +26,15 @@ ChartJS.register(
 
 const Chart: React.FC<any> = ({ dailyData }) => {
 
-  const { trainingData, setTrainingData } = useBrainContext();
+  const { setTrainingData, trainingChartData } = useBrainContext();
 
   useEffect(() => {
-
-    console.log('has brain')
-    const network = new brain.NeuralNetwork({
-      hiddenLayers: [3, 6]
-    })
-
-    network.train([
-      {
-        input: [0, 0],
-        output: [0]
-      },
-      {
-        input: [1, 0],
-        output: [1]
-      },
-      {
-        input: [1, 1],
-        output: [0]
-      },
-      {
-        input: [0, 1],
-        output: [1]
-      },
-    ], {
-      errorThresh: 0.01,
-      log: stats => {
-        console.log(stats);
-      }
-    })
-
-    console.log(network.run([2, 2]))
-
-
     if (dailyData) {
       setTrainingData(dailyData.reverse());
     }
 
   }, [dailyData])
 
-  const trainingChart = (
-    trainingData ? (
-      <Line
-        data={{
-          labels: trainingData.reverse().map(({ date }) => new Date(date).toLocaleDateString()),
-          datasets: [{
-            data: trainingData.map((data) => data.confirmed),
-            label: 'Infected',
-            borderColor: 'rgb(53, 162, 235)',
-            backgroundColor: 'rgba(53, 162, 235, 0.5)',
-          }, {
-            data: trainingData.map((data) => data.deaths),
-            label: 'Deaths',
-            borderColor: 'rgb(255, 99, 132)',
-            backgroundColor: 'rgba(255, 99, 132, 0.5)',
-          },  {
-            data: trainingData.map((data) => data.recovered),
-            label: 'Recovered',
-            borderColor: 'green',
-            backgroundColor: 'rgba(0, 255, 0, 0.5)',
-            fill: true,
-          },
-          ],
-        }}
-      />
-    ) : <Spinner size='lg' />
-  )
 
   const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
 
@@ -135,7 +74,7 @@ const Chart: React.FC<any> = ({ dailyData }) => {
         <Line options={testingOptions} data={testingData} />
       </Flex>
       <Flex w='70%' p={50}>
-        {trainingChart}
+        <Line options={trainingChartData.options} data={trainingChartData.data} />
       </Flex>
     </Flex>
   );
