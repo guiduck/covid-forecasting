@@ -52,21 +52,28 @@ type BrainContextType = {
   setTrainingData: Dispatch<SetStateAction<TrainingData[]>>,
   setDailyData: Dispatch<SetStateAction<DailyData[]>>,
   dailyData: DailyData[],
-  trainingChartData: TrainingChart
+  trainingChartData: TrainingChart,
+  forecast: (data: TrainingData[], days: number) => void,
+  daysInput: string,
+  setDaysInput: Dispatch<SetStateAction<string>>,
+  prediction: number[]
 }
 
 export const BrainContext = createContext({} as BrainContextType)
 
 export const BrainProvider = ({ children }) => {
 
-  const [training, setTraining] = useState(false);
+  const [training, setTraining] = useState(false)
   const [dailyData, setDailyData] = useState<DailyData[]>([])
   const [globalData, setGlobalData] = useState({})
   const [trainingData, setTrainingData] = useState<TrainingData[]>([])
 
+  const [daysInput, setDaysInput] = useState('')
+  const [prediction, setPrediction] = useState([]);
+
   const trainingChartData = {
     data: {
-      labels: trainingData.reverse().map(({ date }) => new Date(date).toLocaleDateString()),
+      labels: trainingData.map(({ date }) => new Date(date).toLocaleDateString()),
       datasets: [{
         data: trainingData.map((data) => data.confirmed),
         label: 'Infected',
@@ -93,42 +100,44 @@ export const BrainProvider = ({ children }) => {
     }
   }
 
-  const forecast = (trainingData: TrainingData[]) => {
-    console.log('has brain')
-    const network = new brain.NeuralNetwork({
-      hiddenLayers: [3, 6]
+  const forecast = (trainingData: TrainingData[], daysInput: number) => {
+    console.log(trainingData)
+    setTraining(true)
+
+    const infected = new Array(50).fill(0)
+
+    if (trainingData) {
+      for(let i = 0; i <= 50; i ++) {
+        infected[i] = trainingData[trainingData.length - 51 + i]?.confirmed
+      }
+    }
+
+    const network = new brain.recurrent.LSTMTimeStep({
+      inputSize: 1,
+      hiddenLayers: [10],
+      outputSize: 1
     })
 
-    network.train([
-      {
-        input: [0, 0],
-        output: [0]
-      },
-      {
-        input: [1, 0],
-        output: [1]
-      },
-      {
-        input: [1, 1],
-        output: [0]
-      },
-      {
-        input: [0, 1],
-        output: [1]
-      },
-    ], {
+    network.train([[1,2,3,4,5,6,7,8,9]], {
+      learningRate: 0.005,
       errorThresh: 0.01,
       log: stats => {
         console.log(stats);
       }
     })
+    console.log(infected)
 
-    console.log(network.run([2, 2]))
+    console.log(network.run([2, 3, 4]))
+    const result = network.forecast([3], daysInput)
+    setPrediction(result)
+    console.log(result)
+
+    setTraining(false)
   }
 
   useEffect(() => {
     const loadDailyData = async () => {
-      const initialDailyData = await fetchDailyData();
+      const initialDailyData = await fetchDailyData()
 
       if (initialDailyData) {
         setDailyData(initialDailyData);
@@ -136,18 +145,30 @@ export const BrainProvider = ({ children }) => {
     }
 
     const loadGlobalData = async () => {
-      const globalData = await fetchGlobalData();
+      const globalData = await fetchGlobalData()
       if (globalData) {
         console.log(globalData)
         setGlobalData(globalData)
       }
     }
 
-    loadDailyData();
+    loadDailyData()
   }, [])
 
   return (
-    <BrainContext.Provider value={{trainingData, setTrainingData, setDailyData, dailyData, trainingChartData}} >
+    <BrainContext.Provider
+      value={{
+        trainingData,
+        setTrainingData,
+        setDailyData,
+        dailyData,
+        trainingChartData,
+        forecast,
+        daysInput,
+        setDaysInput,
+        prediction
+      }}
+    >
       {children}
     </BrainContext.Provider>
   );
