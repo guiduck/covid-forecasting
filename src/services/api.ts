@@ -12,6 +12,15 @@ api.interceptors.request.use(config => {
   return config;
 });
 
+export const fetchGlobalData = async () => {
+  try {
+    const { data } = await api.get('/total');
+    return data;
+  } catch (err) {
+    return err;
+  }
+}
+
 export const fetchDailyData = async () => {
   try {
     const { data } = await axios.get('https://api.covidtracking.com/v1/us/daily.json');

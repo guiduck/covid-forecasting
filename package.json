@@ -16,6 +16,7 @@
     "@types/chart.js": "^2.9.34",
     "@types/faker": "^5.5.9",
     "axios": "^0.24.0",
+    "brain.js": "^2.0.0-beta.4",
     "chart.js": "^3.6.2",
     "faker": "^5.5.3",
     "framer-motion": "^4",
