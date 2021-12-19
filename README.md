@@ -7,6 +7,8 @@ I used data obtained from a covid-19 tracker api to feed our ai so it could make
 
 This project was bootstrapped with [Create Next App](https://nextjs.org/docs/api-reference/create-next-app).
 
+![present](https://github.com/guiduck/covid-forecasting/blob/main/public/images/present.gif)
+
 ## Tech Stack
 ### Devlopment
 * UI: [React](https://reactjs.org/)
@@ -77,8 +79,4 @@ For more information refer to * [Next.js CLI](https://nextjs.org/docs/api-refere
 * `src/Pages/` first level router components;
 
 ## Screenshots
-![quizPage](https://github.com/guiduck/random-quiz-app/blob/main/public/images/quizPage.jpeg)
-![quizPageWrong](https://github.com/guiduck/random-quiz-app/blob/main/public/images/quizPageWrong.jpeg)
-![scoreboard](https://github.com/guiduck/random-quiz-app/blob/main/public/images/scoreboard.jpeg)
-![startQuizPage](https://github.com/guiduck/random-quiz-app/blob/main/public/images/startQuizPage.jpeg)
-![whitetheme](https://github.com/guiduck/random-quiz-app/blob/main/public/images/whitetheme.jpeg)
+![preview](https://github.com/guiduck/covid-forecasting/blob/main/public/images/preview.jpeg)
