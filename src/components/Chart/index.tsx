@@ -42,7 +42,7 @@ const Chart: React.FC<any> = ({ dailyData }) => {
       </Flex>
       <Flex direction='column' w={['100%', '100%', '100%', '50%']} p={50}>
         {!training ? <Line options={predictedChartData.options} data={predictedChartData.data} /> : <Spinner size='xl' />}
-        <chakra.p>and here, hopefully, if everything is working, here should be seen your prediction for the given number of days</chakra.p>
+        <chakra.p>and here, if everything is working, it should be seen your prediction for the given number of days</chakra.p>
       </Flex>
     </Flex>
   );
