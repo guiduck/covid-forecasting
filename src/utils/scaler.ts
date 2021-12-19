@@ -1,3 +1,8 @@
+//the scaler is used to normalize data so it can feed our ai
+
+// referenced from https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.MinMaxScaler.html
+// but used from minmaxscaler https://www.npmjs.com/package/minmaxscaler
+
 let X_min = 0;
 let X_max = 0;
 let min_ = 0;
@@ -28,9 +33,9 @@ function fit(X, min = 0, max = 1) {
   return X_scaled;
 }
 
+//here we need to scale down our data so it fits a 0 - 1 range
 function fit_transform(data, min = 0, max = 1) {
   const train_scaled = fit(data, min, max);
-
 
   return train_scaled;
 }

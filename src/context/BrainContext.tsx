@@ -155,11 +155,11 @@ export const BrainProvider = ({ children }) => {
   const forecast = (trainingData: TrainingData[], daysInput: number) => {
     setTraining(true)
 
-    const newTrainingData = new Array(50).fill(0)
+    const newTrainingData = new Array(80).fill(0)
 
     if (trainingData) {
-      for(let i = 0; i <= 50; i ++) {
-        newTrainingData[i] = trainingData[trainingData.length - 51 + i]?.confirmed
+      for(let i = 0; i <= 80; i ++) {
+        newTrainingData[i] = trainingData[trainingData.length - 81 + i]?.confirmed
       }
     }
 
