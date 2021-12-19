@@ -83,7 +83,8 @@ type BrainContextType = {
   forecast: (data: TrainingData[], days: number) => void,
   daysInput: string,
   setDaysInput: Dispatch<SetStateAction<string>>,
-  prediction: number[]
+  prediction: number[],
+  training: boolean
 }
 
 export const BrainContext = createContext({} as BrainContextType)
@@ -152,20 +153,7 @@ export const BrainProvider = ({ children }) => {
   }
 
   const forecast = (trainingData: TrainingData[], daysInput: number) => {
-    console.log(trainingData)
     setTraining(true)
-
-    function format(arr) {
-      const toReturn = []
-      for(let i= 0; i<arr.length; i+=5) {
-          toReturn.push(arr.slice(i, i+5))
-      }
-      if(toReturn[toReturn.length-1].length == 1) {
-        const last = toReturn.pop()
-        toReturn[toReturn.length-1].concat(last)
-      }
-      return toReturn
-    }
 
     const newTrainingData = new Array(50).fill(0)
 
@@ -176,9 +164,6 @@ export const BrainProvider = ({ children }) => {
     }
 
     const scaledData = scaler.fit_transform(newTrainingData);
-    const readyforTrainingData = format(scaledData);
-
-    //use readyForTrainingData to train networkw
 
     const network = new brain.recurrent.LSTMTimeStep({
       inputSize: 1,
@@ -193,18 +178,9 @@ export const BrainProvider = ({ children }) => {
         console.log(stats);
       }
     })
-    console.log('unscaled learning data', newTrainingData)
-    console.log(scaledData, 'scaledData')
-    console.log('formated scaled/fitttrans data', readyforTrainingData)
 
     const result = network.forecast([1], daysInput)
     setPrediction(scaler.inverse_transform(result))
-    console.log(result)
-    console.log(scaler.inverse_transform(result))
-
-    // reverse scailing and json.stringify result
-    // console.log(JSON.stringify(scaler.inverse_transform(network.forecast(scaledData, 3))));
-
     setTraining(false)
   }
 
@@ -220,13 +196,12 @@ export const BrainProvider = ({ children }) => {
     const loadGlobalData = async () => {
       const globalData = await fetchGlobalData()
       if (globalData) {
-        console.log(globalData)
         setGlobalData(globalData)
       }
     }
 
     loadDailyData()
-    loadGlobalData()
+    // loadGlobalData()
   }, [])
 
   return (
@@ -241,7 +216,8 @@ export const BrainProvider = ({ children }) => {
         daysInput,
         setDaysInput,
         prediction,
-        predictedChartData
+        predictedChartData,
+        training
       }}
     >
       {children}

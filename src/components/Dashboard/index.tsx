@@ -1,4 +1,4 @@
-import { Button, Flex, Heading, Input } from '@chakra-ui/react';
+import { Box, Button, Flex, Heading, Input, Text } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import Chart from '../Chart';
 import { useBrainContext } from '../../context/BrainContext';
@@ -21,22 +21,32 @@ const Dashboard: React.FC = () => {
 
   return (
     <Flex direction='column' width='100vw' justifyContent='center' >
-      <Flex direction='column'>
-        <Heading p={10} size='xl' > How many days ahead would you like to predict? </Heading>
-        <Flex width='40%' justifyContent='space-around'>
+      <Flex direction='column' alignItems='center'>
+        <Heading m={5} size='xl'>How many days ahead would you like to predict? </Heading>
+        <Text ml={10} mb={5} size='md'>Textinho explicando coisa boa
+        Textinho explicando coisa boa
+        Textinho explicando coisa boa
+        Textinho explicando coisa boa
+        Textinho explicando coisa boa
+        Textinho explicando coisa boa
+        Textinho explicando coisa boa
+        Textinho explicando coisa boa
+        Textinho explicando coisa boa
+        </Text>
+        <Flex>
           <Input
-            width='25%'
-            placeholder='days to predict'
+            width='200px'
+            placeholder='Days to predict'
             type='number'
             value={daysInput}
             onChange={(e) => setDaysInput(e.target.value)}
           />
-          <Button onClick={handleForecast}>Train AI</Button>
+          <Button disabled={daysInput === ""} ml='1.5' onClick={handleForecast}>Train AI</Button>
         </Flex>
       </Flex>
-      <Flex >
+      <Box>
         <Chart dailyData={dailyData} />
-      </Flex>
+      </Box>
     </Flex>
   );
 }

@@ -25,7 +25,7 @@ ChartJS.register(
 
 const Chart: React.FC<any> = ({ dailyData }) => {
 
-  const { setTrainingData, trainingChartData, predictedChartData } = useBrainContext();
+  const { setTrainingData, trainingChartData, predictedChartData, training } = useBrainContext();
 
   useEffect(() => {
     if (dailyData) {
@@ -36,12 +36,13 @@ const Chart: React.FC<any> = ({ dailyData }) => {
 
 
   return (
-    <Flex direction='column' w='100%'>
-      <Flex w='70%' p={50}>
+    <Flex direction={['column', 'column', 'column', 'row']} w='100%'>
+      <Flex w={['100%', '100%', '100%', '50%']} p={50}>
         <Line options={trainingChartData.options} data={trainingChartData.data} />
       </Flex>
-      <Flex w='70%' p={50}>
-        <Line options={predictedChartData.options} data={predictedChartData.data} />
+      <Flex w={['100%', '100%', '100%', '50%']} p={50}>
+        {!training ? <Line options={predictedChartData.options} data={predictedChartData.data} /> : <Spinner size='xl' />}
+
       </Flex>
     </Flex>
   );
