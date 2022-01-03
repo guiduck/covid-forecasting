@@ -2,6 +2,8 @@
 
 ### Overview
 
+https://blissful-golick-371b72.netlify.app
+
 This is a covid-19 forecasting app made using NextJS, Typescript, eslint, prettier, Chakra-ui, Chartjs, Brain.js, minmaxscaler and Axios. The app asks for a number of days to predict how the infection rate is gonna be.
 I used data obtained from a covid-19 tracker api to feed our ai so it could make somewhat accurate predictions considering just the confirmed cases obtained from the api.
 
